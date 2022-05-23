@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import RoverCard from "./RoverCard";
+import "../rover.css";
 
 const rover = ["Curiosity", "Opportunity", "Spirit"];
 
@@ -12,14 +13,14 @@ const MarsRover = () => {
     cameras: [],
   });
 
-  const roverDefault = "Curiosity";
-  const URLQUERY = `https://api.nasa.gov/mars-photos/api/v1/manifests/${roverDefault}/?api_key=${process.env.REACT_APP_ROVER_KEY}`;
-  const URLRESULT = `https://api.nasa.gov/mars-photos/api/v1/rovers/${roverDefault}/photos?earth_date=${queryData.latestEarthDate}&api_key=${process.env.REACT_APP_ROVER_KEY}`;
+  // console.log(queryData.latestEarthDate, "DDD");
+
+  const URLQUERY = `https://api.nasa.gov/mars-photos/api/v1/manifests/${roverVal}/?&api_key=${process.env.REACT_APP_ROVER2_KEY}`;
+  const URLRESULT = `https://api.nasa.gov/mars-photos/api/v1/rovers/${roverVal}/photos?earth_date=${queryData.latestEarthDate}&api_key=${process.env.REACT_APP_ROVER2_KEY}`;
 
   useEffect(() => {
     const fetchRoverQuery = async () => {
       const { data } = await axios.get(URLQUERY);
-      let maxDate = data.photo_manifest.max_date;
       let recievedQueryData = data.photo_manifest.photos;
       let latestDateResult = recievedQueryData[recievedQueryData.length - 1];
 
@@ -32,34 +33,40 @@ const MarsRover = () => {
       });
     };
 
+    fetchRoverQuery();
+  }, []);
+
+  useEffect(() => {
     const fetchRoverResult = async () => {
       try {
         const { data } = await axios.get(URLRESULT);
-        // console.log(data.photos, "DATA HERE");
+        console.log(data, "new D");
         setRoverData((prevState) => {
           return [...prevState, ...data.photos];
         });
       } catch (error) {
-        console.error(error, "ERR");
+        console.error(error, "ERRRR");
       }
     };
-
-    fetchRoverQuery();
     fetchRoverResult();
-  }, [roverData]);
+  }, [queryData.latestEarthDate]);
 
-  //console.log(roverData, "rovers datas");
-
-  const renderedRoverData = roverData.map((photo, index) => {
-    console.log(photo);
+  const size = 48;
+  const renderedRoverData = roverData.slice(0, size).map((photo, index) => {
     return (
-      <RoverCard
-        key={index}
-        earthDate={photo.earth_date}
-        // id={photo.id}
-        image={photo.img_src}
-      />
+      <div key={index}>
+        <RoverCard
+          // id={photo.id}
+          earthDate={photo.earth_date}
+          image={photo.img_src}
+          camera={photo.camera.name}
+        />
+      </div>
     );
+  });
+
+  const renderedCameras = queryData.cameras.map((cam) => {
+    return <option key={cam}>{cam}</option>;
   });
 
   return (
@@ -67,7 +74,11 @@ const MarsRover = () => {
       <div>Mars rover Page</div>
       <select
         name="RoverOpt"
-        onChange={(e) => setRoverVal(e.target.value)}
+        onChange={(e) =>
+          setQueryData({
+            latestEarthDate: e.target.value,
+          })
+        }
         value={roverVal}
       >
         <option value="">Choose a Rover</option>
@@ -75,18 +86,18 @@ const MarsRover = () => {
         <option value="Opportunity">Opportunity</option>
         <option value="Spirit">Spirit</option>
       </select>
-      <select name="CameraOPt">
-        <option value="">Choose a Camera</option>
-        <option value="CHEMCAM">CHEMCAM</option>
-        <option value="MAHLI">MAHLI</option>
-      </select>
+      <select name="CameraOPt">{renderedCameras}</select>
       <br />
-      <select name="DateOpt">
-        <option value="">Choose an available date</option>
-        <option value="">test</option>
-        <option value="">test2</option>
-      </select>
-      <div>{renderedRoverData ? renderedRoverData : <div>Loadng....</div>}</div>
+      <input
+        type="date"
+        value={queryData.latestEarthDate}
+        onChange={(e) =>
+          setQueryData({
+            latestEarthDate: e.target.value,
+          })
+        }
+      />
+      <div className="gridContainer">{renderedRoverData}</div>
     </div>
   );
 };

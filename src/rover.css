@@ -1,4 +1,17 @@
-.roverImg {
-  height: 400px;
+.gridImage {
+  height: 200px;
+  width: 200px;
+}
+
+.gridContainer {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-gap: 5px;
+  grid-auto-rows: minMax(100px, auto);
+}
+
+.grid-item {
+  height: 450px;
   width: 400px;
+  border: black solid;
 }
