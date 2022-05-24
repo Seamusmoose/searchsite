@@ -4,8 +4,9 @@
 }
 
 .gridContainer {
+  width: 80vw;
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   grid-gap: 5px;
   grid-auto-rows: minMax(100px, auto);
 }
