@@ -68,6 +68,7 @@ const MarsRover = () => {
     cameras: [camerasList],
   });
   const [cameraState, setCameraState] = useState("");
+  const [filterData, setFilterData] = useState(roverData);
 
   const URLQUERY = `https://api.nasa.gov/mars-photos/api/v1/manifests/${roverVal}/?&api_key=${process.env.REACT_APP_ROVER2_KEY}`;
   const URLRESULT = `https://api.nasa.gov/mars-photos/api/v1/rovers/${roverVal}/photos?earth_date=${queryData.latestEarthDate}&api_key=${process.env.REACT_APP_ROVER2_KEY}`;
@@ -90,11 +91,6 @@ const MarsRover = () => {
     fetchRoverQueryOnMount();
   }, []);
 
-
-
-
-
-
   useEffect(() => {
     const fetchRoverResult = async () => {
       const { data } = await axios.get(URLRESULT);
@@ -115,15 +111,16 @@ const MarsRover = () => {
     fetchRoverResult();
   }, [queryData.latestEarthDate, roverVal]);
 
-
-  
+  // useEffect(() => {
+  //   const filteredData = roverData.filter(
+  //     (el) => el.camera.name === cameraState
+  //   );
+  //   setRoverData(filteredData);
+  // }, [cameraState]);
 
   useEffect(() => {
-    const filteredData = roverData.filter(
-      (el) => el.camera.name === cameraState
-    );
-    setRoverData(filteredData);
-  }, [cameraState]);
+    setFilterData(roverData.filter((el) => el.camera.name === cameraState));
+  }, [roverData, setFilterData, cameraState]);
 
   console.log(roverData, cameraState, "das");
 
@@ -135,14 +132,6 @@ const MarsRover = () => {
       };
     });
   };
-
-
-
-
-
-
-
-
 
   // console.log(
   //   roverData.map((i) => i),
@@ -217,7 +206,7 @@ const MarsRover = () => {
         onChange={handleDateChange}
       />
       <div className="gridContainer">
-        {/* {roverData.slice(0, size).map((photo, index) => {
+        {filterData.slice(0, size).map((photo, index) => {
           return (
             <div key={index}>
               <RoverCard
@@ -227,7 +216,7 @@ const MarsRover = () => {
               />
             </div>
           );
-        })} */}
+        })}
       </div>
     </div>
   );
