@@ -3,49 +3,6 @@ import axios from "axios";
 import RoverCard from "./RoverCard";
 import "../rover.css";
 
-const example = [
-  {
-    id: 966591,
-    sol: 3459,
-    camera: {
-      id: 22,
-      name: "MAST",
-      rover_id: 5,
-      full_name: "Mast Camera",
-    },
-    img_src:
-      "https://mars.nasa.gov/msl-raw-images/msss/03459/mcam/3459ML1019310001401014I01_DXXX.jpg",
-    earth_date: "2022-04-30",
-    rover: {
-      id: 5,
-      name: "Curiosity",
-      landing_date: "2012-08-06",
-      launch_date: "2011-11-26",
-      status: "active",
-    },
-  },
-  {
-    id: 966591,
-    sol: 3459,
-    camera: {
-      id: 22,
-      name: "MAST",
-      rover_id: 5,
-      full_name: "Mast Camera",
-    },
-    img_src:
-      "https://mars.nasa.gov/msl-raw-images/msss/03459/mcam/3459ML1019310001401014I01_DXXX.jpg",
-    earth_date: "2022-04-30",
-    rover: {
-      id: 5,
-      name: "Curiosity",
-      landing_date: "2012-08-06",
-      launch_date: "2011-11-26",
-      status: "active",
-    },
-  },
-];
-
 const camerasList = [
   "FHAZ",
   "RHAZ",
@@ -57,6 +14,7 @@ const camerasList = [
   "PANCAM",
   "MINITES",
 ];
+const size = 48;
 const currentRovers = ["Curiosity", "Opportunity", "Spirit"];
 const date = new Date().toISOString().slice(0, 10);
 
@@ -78,7 +36,6 @@ const MarsRover = () => {
       const { data } = await axios.get(URLQUERY);
       let recievedQueryData = data.photo_manifest.photos;
       let latestDateResult = recievedQueryData[recievedQueryData.length - 1];
-      // console.log(latestDateResult.cameras, "latestcam");
       setQueryData((queryData) => {
         return {
           ...queryData,
@@ -111,18 +68,9 @@ const MarsRover = () => {
     fetchRoverResult();
   }, [queryData.latestEarthDate, roverVal]);
 
-  // useEffect(() => {
-  //   const filteredData = roverData.filter(
-  //     (el) => el.camera.name === cameraState
-  //   );
-  //   setRoverData(filteredData);
-  // }, [cameraState]);
-
   useEffect(() => {
     setFilterData(roverData.filter((el) => el.camera.name === cameraState));
   }, [roverData, setFilterData, cameraState]);
-
-  console.log(roverData, cameraState, "das");
 
   const handleDateChange = (e) => {
     setQueryData((prevState) => {
@@ -132,11 +80,6 @@ const MarsRover = () => {
       };
     });
   };
-
-  // console.log(
-  //   roverData.map((i) => i),
-  //   "dataaa"
-  // );
 
   const renderedCameras = queryData.cameras.map((cam) => {
     return <option key={cam}>{cam}</option>;
@@ -171,23 +114,18 @@ const MarsRover = () => {
     }
   };
 
-  // console.log(cameraState, "state");
-
-  // console.log(cameraState, "camStatee");
-
-  const size = 48;
-
+  console.log(filterData, "fillll");
   return (
     <div>
       <div>Mars rover Page</div>
       <select
+        placeholder="select Camera"
         name="RoverOpt"
         onChange={(e) => setRoverVal(e.target.value)}
         value={roverVal}
       >
         {renderedRovers}
       </select>
-      {/* <button onClick={filterbyCamera}>filter by camera</button> */}
 
       <select
         name="CameraOPt"
@@ -206,17 +144,29 @@ const MarsRover = () => {
         onChange={handleDateChange}
       />
       <div className="gridContainer">
-        {filterData.slice(0, size).map((photo, index) => {
-          return (
-            <div key={index}>
-              <RoverCard
-                earthDate={photo.earth_date}
-                image={photo.img_src}
-                camera={photo.camera.name}
-              />
-            </div>
-          );
-        })}
+        {filterData === []
+          ? roverData.slice(0, size).map((photo, index) => {
+              return (
+                <div key={index}>
+                  <RoverCard
+                    earthDate={photo.earth_date}
+                    image={photo.img_src}
+                    camera={photo.camera.name}
+                  />
+                </div>
+              );
+            })
+          : filterData.slice(0, size).map((photo, index) => {
+              return (
+                <div key={index}>
+                  <RoverCard
+                    earthDate={photo.earth_date}
+                    image={photo.img_src}
+                    camera={photo.camera.name}
+                  />
+                </div>
+              );
+            })}
       </div>
     </div>
   );
