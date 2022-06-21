@@ -18,29 +18,33 @@ const size = 48;
 const currentRovers = ["Curiosity", "Opportunity", "Spirit"];
 const date = new Date().toISOString().slice(0, 10);
 
-const MarsRover = () => {
+const MarsRover = (props) => {
   const [roverData, setRoverData] = useState([]);
   const [roverVal, setRoverVal] = useState("Curiosity");
+  const [cameraState, setCameraState] = useState("");
+  const [filterData, setFilterData] = useState(roverData);
   const [queryData, setQueryData] = useState({
     latestEarthDate: date,
     cameras: [camerasList],
+    sol: null,
   });
-  const [cameraState, setCameraState] = useState("");
-  const [filterData, setFilterData] = useState(roverData);
 
   const URLQUERY = `https://api.nasa.gov/mars-photos/api/v1/manifests/${roverVal}/?&api_key=${process.env.REACT_APP_ROVER2_KEY}`;
   const URLRESULT = `https://api.nasa.gov/mars-photos/api/v1/rovers/${roverVal}/photos?earth_date=${queryData.latestEarthDate}&api_key=${process.env.REACT_APP_ROVER2_KEY}`;
+  props.getSol(queryData.sol);
 
   useEffect(() => {
     const fetchRoverQueryOnMount = async () => {
       const { data } = await axios.get(URLQUERY);
       let recievedQueryData = data.photo_manifest.photos;
       let latestDateResult = recievedQueryData[recievedQueryData.length - 1];
+
       setQueryData((queryData) => {
         return {
           ...queryData,
           latestEarthDate: latestDateResult.earth_date,
           cameras: latestDateResult.cameras,
+          sol: latestDateResult.sol,
         };
       });
     };
@@ -114,7 +118,6 @@ const MarsRover = () => {
     }
   };
 
-  console.log(filterData, "fillll");
   return (
     <div>
       <div>Mars rover Page</div>

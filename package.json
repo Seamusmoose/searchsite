@@ -1,15 +1,30 @@
 {
   "name": "searchsite",
   "version": "0.1.0",
+  "proxy": "http://localhost:5000",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.2.0",
     "@testing-library/user-event": "^13.5.0",
+    "async_hooks": "^1.0.0",
     "axios": "^0.27.2",
+    "browserify-zlib": "^0.2.0",
+    "cheerio": "^1.0.0-rc.11",
+    "concurrently": "^7.2.1",
+    "cors": "^2.8.5",
+    "express": "^4.18.1",
+    "get-urls": "^11.0.0",
+    "node-fetch": "^3.2.4",
+    "node-polyfill-webpack-plugin": "^1.1.4",
+    "nodemon": "^2.0.16",
+    "puppeteer": "^14.1.2",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
+    "request": "^2.79.0",
+    "stream": "^0.0.2",
+    "util": "^0.12.4",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -35,5 +50,18 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "assert": "^2.0.0",
+    "buffer": "^6.0.3",
+    "crypto-browserify": "^3.12.0",
+    "https-browserify": "^1.0.0",
+    "os-browserify": "^0.3.0",
+    "process": "^0.11.10",
+    "react-app-rewired": "^2.2.1",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
+    "url": "^0.11.0",
+    "webpack-node-externals": "^3.0.0"
   }
 }
